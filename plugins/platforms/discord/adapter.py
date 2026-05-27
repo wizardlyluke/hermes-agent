@@ -6137,6 +6137,7 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
     ``DISCORD_REACTIONS``, ``DISCORD_IGNORED_CHANNELS``,
     ``DISCORD_ALLOWED_CHANNELS``, ``DISCORD_NO_THREAD_CHANNELS``,
     ``DISCORD_HISTORY_BACKFILL``, ``DISCORD_HISTORY_BACKFILL_LIMIT``,
+    ``DISCORD_DM_HISTORY_BACKFILL``, ``DISCORD_DM_HISTORY_BACKFILL_LIMIT``,
     ``DISCORD_ALLOW_MENTION_*``, ``DISCORD_REPLY_TO_MODE``,
     ``DISCORD_THREAD_REQUIRE_MENTION``).  Rather than rewrite ~50 call sites
     inside the adapter to read from ``PlatformConfig.extra`` instead, this
@@ -6187,6 +6188,11 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
     hbl = discord_cfg.get("history_backfill_limit")
     if hbl is not None and not os.getenv("DISCORD_HISTORY_BACKFILL_LIMIT"):
         os.environ["DISCORD_HISTORY_BACKFILL_LIMIT"] = str(hbl)
+    if "dm_history_backfill" in discord_cfg and not os.getenv("DISCORD_DM_HISTORY_BACKFILL"):
+        os.environ["DISCORD_DM_HISTORY_BACKFILL"] = str(discord_cfg["dm_history_backfill"]).lower()
+    dm_hbl = discord_cfg.get("dm_history_backfill_limit")
+    if dm_hbl is not None and not os.getenv("DISCORD_DM_HISTORY_BACKFILL_LIMIT"):
+        os.environ["DISCORD_DM_HISTORY_BACKFILL_LIMIT"] = str(dm_hbl)
     # allow_mentions: granular control over what the bot can ping.
     # Safe defaults (no @everyone/roles) are applied in the adapter;
     # these YAML keys only override when set and let users opt back
